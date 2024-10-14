@@ -1,9 +1,8 @@
 // web/src/frontend/src/components/PostCreate.test.js
-<script type="module" src="your-script.js"></script>
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom'
-import CreatePost from './CreatePost';
+import PostCreate from './CreatePost';
 import axios from 'axios';
 
 jest.mock('axios'); // Mock axios to prevent actual API calls
@@ -15,7 +14,7 @@ describe('PostCreate Component', () => {
     beforeEach(() => {
         // Mocking localStorage
         const mockUser = { email: 'alice@example.com' };
-        jest.spyOn(Storage.prototype, 'getItem').mockReturnValue(JSON.stringify([mockUser]));
+        jest.spyOn(Storage.prototype, 'getItem').mockReturnValue(JSON.stringify(mockUser));
     });
 
     afterEach(() => {
@@ -56,14 +55,16 @@ describe('PostCreate Component', () => {
         fireEvent.click(screen.getByText('Create Post'));
 
         // Verify that onPostCreated is called
-        expect(mockOnPostCreated).toHaveBeenCalledWith({
-            id: expect.any(Number), // Use expect.any to ignore specific values
-            username: 'alice', // Derived from email
-            title: 'My Post Title',
-            content: 'This is the content of the post.',
-            like: 0,
-            comments: [],
-        });
+        await waitFor(() => 
+            expect(mockOnPostCreated).toHaveBeenCalledWith({
+                id: expect.any(Number), // Use expect.any to ignore specific values
+                username: 'alice', // Derived from email
+                title: 'My Post Title',
+                content: 'This is the content of the post.',
+                like: 0,
+                comments: [],
+            })
+        );
 
         // Check if the form clears (title and content are reset)
         expect(screen.getByPlaceholderText('Title').value).toBe('');
