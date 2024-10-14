@@ -6,6 +6,15 @@ const { register, collectDefaultMetrics, Histogram } = require('prom-client');
 
 const app = express();
 const port = process.env.PORT || 5000;
+const environment = process.env.NODE_ENV || 'development';
+
+const keyspace = environment === 'production' 
+  ? 'opswerkshubkeyspace_prod' 
+  : 'opswerkshubkeyspace_dev';
+
+console.log(process.env.NODE_ENV, "NODE_ENV");
+console.log(environment, "environment");
+console.log(keyspace, "keyspace");
 
 app.use(bodyParser.json());
 
@@ -18,7 +27,7 @@ const client = new cassandra.Client({
 
 // Keyspace and table creation queries
 const keyspaceQuery = `
-  CREATE KEYSPACE IF NOT EXISTS opswerkshubkeyspace_dev
+  CREATE KEYSPACE IF NOT EXISTS ${keyspace}
   WITH REPLICATION = {
     'class': 'SimpleStrategy',
     'replication_factor': 1
@@ -26,7 +35,7 @@ const keyspaceQuery = `
 `;
 
 const usersTableQuery = `
-  CREATE TABLE IF NOT EXISTS opswerkshubkeyspace_dev.users (
+  CREATE TABLE IF NOT EXISTS ${keyspace}.users (
     email TEXT PRIMARY KEY,
     password TEXT,
     loggedIn BOOLEAN
@@ -34,7 +43,7 @@ const usersTableQuery = `
 `;
 
 const likedPostsTableQuery = `
-  CREATE TABLE IF NOT EXISTS opswerkshubkeyspace_dev.liked_posts (
+  CREATE TABLE IF NOT EXISTS ${keyspace}.liked_posts (
     postId BIGINT,
     email TEXT,
     PRIMARY KEY (postId, email)
@@ -42,7 +51,7 @@ const likedPostsTableQuery = `
 `;
 
 const postsTableQuery = `
-  CREATE TABLE IF NOT EXISTS opswerkshubkeyspace_dev.posts (
+  CREATE TABLE IF NOT EXISTS ${keyspace}.posts (
     id BIGINT PRIMARY KEY,
     username TEXT,
     title TEXT,
@@ -80,10 +89,12 @@ async function connectToCassandra(attempt = 1) {
 async function setupDatabase() {
   try {
     // Create keyspace
-    await client.execute(keyspaceQuery);
+    await client.execute(keyspaceQuery.replace('opswerkshubkeyspace_dev', keyspace));
     console.log('Keyspace created/verified.');
 
-    client.keyspace = 'opswerkshubkeyspace_dev'; 
+    console.log(keyspace, 'is currently being used');
+
+    client.keyspace = keyspace; 
 
     await client.execute(usersTableQuery);
     console.log('Users table created/verified.');
