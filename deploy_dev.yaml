@@ -1,0 +1,177 @@
+---
+
+# Blue 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opswerks-hub-blue
+  namespace: dev 
+  labels:
+    app: opswerks-hub
+    version: blue
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: opswerks-hub
+      version: blue
+  template:
+    metadata:
+      labels:
+        app: opswerks-hub
+        version: blue
+    spec:
+      containers:
+      - name: opswerks-hub
+        image: romeofrancobarro/opswerks-hub:latest
+        ports:
+        - containerPort: 80
+
+---
+
+# Green 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opswerks-hub-green
+  namespace: dev 
+  labels:
+    app: opswerks-hub
+    version: green
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: opswerks-hub
+      version: green
+  template:
+    metadata:
+      labels:
+        app: opswerks-hub
+        version: green
+    spec:
+      containers:
+      - name: opswerks-hub
+        image: romeofrancobarro/opswerks-hub:latest
+        ports:
+        - containerPort: 80
+
+---
+
+# Blue-Green Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: opswerks-hub-service
+  namespace: dev  
+spec:
+  type: LoadBalancer
+  selector:
+    app: opswerks-hub
+    version: blue  # Active version
+  ports:
+  - port: 80
+    targetPort: 80
+
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opswerks-hub-backend
+  namespace: dev  # Added namespace here
+  labels:
+    app: opswerks-hub-backend
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: opswerks-hub-backend
+  template:
+    metadata:
+      labels:
+        app: opswerks-hub-backend
+    spec:
+      containers:
+      - name: opswerks-hub-backend
+        image: romeofrancobarro/opswerks-hub-backend:latest
+        ports:
+        - containerPort: 5000
+        env:
+        - name: NODE_ENV
+          value: "development" #production or development
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: opswerks-hub-backend-service
+  namespace: dev  
+spec:
+  type: LoadBalancer
+  selector:
+    app: opswerks-hub-backend
+  ports:
+  - port: 5000
+    targetPort: 5000
+
+---
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: opswerks-hub-database
+  namespace: dev 
+  labels:
+    app: opswerks-hub-database
+spec:
+  serviceName: opswerks-hub-database-service 
+  replicas: 3
+  selector:
+    matchLabels:
+      app: opswerks-hub-database
+  template:
+    metadata:
+      labels:
+        app: opswerks-hub-database
+    spec:
+      containers:
+      - name: opswerks-hub-database
+        image: cassandra:latest
+        ports:
+        - containerPort: 9042
+        env:
+        - name: CASSANDRA_SEEDS
+          value: "opswerks-hub-database-0.opswerks-hub-database-service"
+        - name: CASSANDRA_CLUSTER_NAME
+          value: "OpsWerksHubDatabaseCluster"
+        volumeMounts:
+        - name: cassandra-data
+          mountPath: /var/lib/cassandra
+  volumeClaimTemplates:
+  - metadata:
+      name: cassandra-data
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 1Gi
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: opswerks-hub-database-service  
+  namespace: dev  
+spec:
+  clusterIP: None  
+  selector:
+    app: opswerks-hub-database 
+  ports:
+  - port: 9042
+    targetPort: 9042
+
