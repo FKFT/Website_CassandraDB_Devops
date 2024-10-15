@@ -53,8 +53,8 @@ pipeline {
             steps {
                 container('docker'){
                     script{
-                        sh 'docker run -d --name test10 romeofrancobarro/frontend:dev'
-                        sh 'docker exec -i test10 /bin/sh -c "cd app/ && npm run test"'
+                        sh 'docker run -d --name test11 romeofrancobarro/frontend:dev'
+                        sh 'docker exec -i test11 /bin/sh -c "cd app/ && npm run test"'
                     }
                 }
             }
