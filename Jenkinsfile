@@ -1,26 +1,10 @@
 pipeline {
-    agent {
-        kubernetes {
-            inheritFrom 'k8s-agent'
-            defaultContainer 'docker'
-        }
-    }
+    agent any
     environment {
-        DOCKERHUB_USER = 'imalicatopswerks'
+        DOCKERHUB_USER = 'bcantosopswerks'
         IMAGE_TAG = 'latest'  // Change to a specific version if needed, like 'v1.0'
     }
     stages {
-        stage('Prepare Kubeconfig') {
-            steps {
-                withCredentials([file(credentialsId: 'kubeconfig-secret', variable: 'KUBECONFIG_FILE')]) {
-                    sh '''
-                        mkdir -p ~/.kube
-                        cp $KUBECONFIG_FILE ~/.kube/config
-                        export KUBECONFIG=~/.kube/config
-                    '''
-                }
-            }
-        }
         stage('Docker Login') {
             steps {
                 script {
