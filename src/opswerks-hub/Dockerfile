@@ -21,6 +21,11 @@ FROM nginx:alpine
 
 # Copy the build output from the previous stage
 COPY --from=build /app/build /usr/share/nginx/html
+
+# Copy the entire /app directory for debugging purposes (optional)
+COPY --from=build /app /app
+
+# Copy nginx configuration
 COPY nginx.conf /etc/nginx/nginx.conf
 
 # Expose port 80 for the server
@@ -28,3 +33,4 @@ EXPOSE 80
 
 # Run Nginx in the foreground
 CMD ["nginx", "-g", "daemon off;"]
+
