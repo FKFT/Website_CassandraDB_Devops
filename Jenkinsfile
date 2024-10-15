@@ -51,11 +51,9 @@ pipeline {
         }
         stage('Run Unit Tests') {
             steps {
-                container('node') {
-                    script {
-                        sh 'docker run -d --name test romeofrancobarro/frontend:dev'
-                        sh 'docker exec -it test /bin/sh -c "cd src/opswerks-hub && npm run test"'
-                    }
+                script {
+                    sh 'docker run -d --name test romeofrancobarro/frontend:dev'
+                    sh 'docker exec -it test /bin/sh -c "cd src/opswerks-hub && npm run test"'
                 }
             }
         }
