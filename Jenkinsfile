@@ -2,7 +2,18 @@ pipeline {
     agent {
         kubernetes {
             inheritFrom 'k8s-agent'
-            defaultContainer 'docker'
+            defaultContainer 'docker' 
+            yaml """
+            apiVersion: v1
+            kind: Pod
+            spec:
+                containers:
+                - name: node
+                  image: node:18
+                  command:
+                    - cat
+                  tty: true
+                """
         }
     }
     environment {
@@ -39,12 +50,11 @@ pipeline {
         }
         stage('Run Unit Tests') {
             steps {
-                script {
-                    sh '''
-                        cd src/opswerks-hub
-                        npm install
-                        npm test
-                    '''
+                container('node') {
+                    script {
+                        sh 'cd src/opswerks-hub'
+                        sh 'npm test'
+                    }
                 }
             }
         }
