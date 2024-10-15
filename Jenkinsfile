@@ -52,7 +52,9 @@ pipeline {
         stage('Run Unit Tests') {
             steps {
                 script {
-                    sh 'npm --prefix app/ run test -- --ci --coverage'
+                    container('node'){
+                        sh 'npm --prefix app/ run test -- --ci --coverage'
+                    }
                 }
             }
         }
