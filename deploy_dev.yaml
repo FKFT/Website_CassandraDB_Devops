@@ -52,7 +52,7 @@ spec:
     spec:
       containers:
       - name: opswerks-hub
-        image: bcantosopswerks/opswerks-hub:latest
+        image: bcantosopswerks/frontend:latest
         ports:
         - containerPort: 80
 
@@ -143,7 +143,7 @@ spec:
     spec:
       containers:
       - name: opswerks-hub-database
-        image: bcantosopswerks/cassandra:latest
+        image: cassandra:latest
         ports:
         - containerPort: 9042
         env:
