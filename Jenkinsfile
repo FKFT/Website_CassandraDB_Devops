@@ -2,7 +2,7 @@ pipeline {
     agent {
         kubernetes {
             inheritFrom 'k8s-agent'
-            defaultContainer 'docker' 
+            defaultContainer 'node' 
             yaml """
             apiVersion: v1
             kind: Pod
