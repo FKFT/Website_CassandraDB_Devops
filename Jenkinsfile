@@ -30,6 +30,16 @@ pipeline {
                 }
             }
         }
+        stage('Run Unit Tests') {
+            steps {
+                script {
+                    sh '''
+                        cd src/opswerks-hub
+                        npm test
+                    '''
+                }
+            }
+        }
         stage('Build Docker Images') {
             steps {
                 script {
