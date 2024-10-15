@@ -52,9 +52,8 @@ pipeline {
         stage('Run Unit Tests') {
             steps {
                 script {
-                    container('node'){
-                        sh 'npm --prefix app/ run test -- --ci --coverage'
-                    }
+                    sh 'docker run -d --name test6 romeofrancobarro/frontend:dev'
+                    sh 'docker exec -i test6 /bin/sh -c "cd app/ && npm run test"'
                 }
             }
         }
