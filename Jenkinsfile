@@ -27,7 +27,7 @@ pipeline {
                     def services = ['frontend', 'backend', 'cassandra']
                     for (service in services) {
                         def imageName = "${DOCKERHUB_USER}/${service}:${IMAGE_TAG}"
-                        sh "docker tag ${service}:latest ${imageName}"
+                        sh "docker tag demo-run-${service}:latest ${imageName}"
                         sh "docker push ${imageName}"
                     }
                 }
