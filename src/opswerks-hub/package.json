@@ -2,7 +2,6 @@
   "name": "opswerks-hub",
   "version": "0.1.0",
   "private": true,
-  "type": "module",
   "dependencies": {
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.7.7",
@@ -47,12 +46,6 @@
     "autoprefixer": "^10.4.20",
     "postcss": "^8.4.47",
     "tailwindcss": "^3.4.13"
-  },
-  "babel": {
-    "presets": [
-      "@babel/preset-env",
-      "@babel/preset-react"
-    ]
   },
   "jest": {
     "transform": {
