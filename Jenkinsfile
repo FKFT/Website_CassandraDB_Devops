@@ -30,6 +30,13 @@ pipeline {
                 }
             }
         }
+        stage('Build Docker Images') {
+            steps {
+                script {
+                    sh 'docker compose build'
+                }
+            }
+        }
         stage('Run Unit Tests') {
             steps {
                 script {
@@ -38,13 +45,6 @@ pipeline {
                         npm install
                         npm test
                     '''
-                }
-            }
-        }
-        stage('Build Docker Images') {
-            steps {
-                script {
-                    sh 'docker compose build'
                 }
             }
         }
