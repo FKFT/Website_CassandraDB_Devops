@@ -35,6 +35,7 @@ pipeline {
                 script {
                     sh '''
                         cd src/opswerks-hub
+                        npm install
                         npm test
                     '''
                 }
