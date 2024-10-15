@@ -52,8 +52,8 @@ pipeline {
         stage('Run Unit Tests') {
             steps {
                 script {
-                    sh 'docker run -d --name test3 romeofrancobarro/frontend:dev'
-                    sh 'docker exec -i test3 /bin/sh -c "cd app/ && npm run test"'
+                    sh 'docker run -d --name test4 romeofrancobarro/frontend:dev'
+                    sh 'docker exec -i test4 /bin/sh -c "cd app/ && npm run test"'
                 }
             }
         }
