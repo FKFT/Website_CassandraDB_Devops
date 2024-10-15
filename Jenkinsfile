@@ -37,16 +37,6 @@ pipeline {
                 }
             }
         }
-        stage('Run Unit Tests') {
-            steps {
-                container('node') {
-                    script {
-                        sh 'cd src/opswerks-hub'
-                        sh 'npm test'
-                    }
-                }
-            }
-        }
         stage('Tag and Push Docker Images') {
             steps {
                 script {
@@ -55,6 +45,16 @@ pipeline {
                         def imageName = "${DOCKERHUB_USER}/${service}:${IMAGE_TAG}"
                         sh "docker tag demo-run-${service}:latest ${imageName}"
                         sh "docker push ${imageName}"
+                    }
+                }
+            }
+        }
+        stage('Run Unit Tests') {
+            steps {
+                container('node') {
+                    script {
+                        sh 'cd src/opswerks-hub'
+                        sh 'npm test'
                     }
                 }
             }
