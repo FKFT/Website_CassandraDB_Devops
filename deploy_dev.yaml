@@ -1,16 +1,14 @@
----
-
-# Blue 
+# Blue Deployment for Development
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: opswerks-hub-blue
-  namespace: dev 
+  namespace: dev
   labels:
     app: opswerks-hub
     version: blue
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: opswerks-hub
@@ -23,23 +21,23 @@ spec:
     spec:
       containers:
       - name: opswerks-hub
-        image: bcantosopswerks/frontend:latest
+        image: romeofrancobarro/opswerks-hub:dev  # Changed to dev image
         ports:
         - containerPort: 80
-
+ 
 ---
-
-# Green 
+ 
+# Green Deployment for Development
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: opswerks-hub-green
-  namespace: dev 
+  namespace: dev
   labels:
     app: opswerks-hub
     version: green
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: opswerks-hub
@@ -52,19 +50,19 @@ spec:
     spec:
       containers:
       - name: opswerks-hub
-        image: bcantosopswerks/frontend:latest
+        image: romeofrancobarro/opswerks-hub:dev  # Changed to dev image
         ports:
         - containerPort: 80
-
+ 
 ---
-
-# Blue-Green Service
+ 
+# Blue-Green Service for Development
 apiVersion: v1
 kind: Service
 metadata:
   name: opswerks-hub-service
   namespace: dev  
-  labels: 
+  labels:
     frontend: opswerks-hub-frontend-service
 spec:
   type: LoadBalancer
@@ -74,19 +72,19 @@ spec:
   ports:
   - port: 80
     targetPort: 80
-
-
+ 
 ---
-
+ 
+# Backend Deployment for Development
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: opswerks-hub-backend
-  namespace: dev  # Added namespace here
+  namespace: dev  
   labels:
     app: opswerks-hub-backend
 spec:
-  replicas: 3
+  replicas: 2
   selector:
     matchLabels:
       app: opswerks-hub-backend
@@ -97,21 +95,29 @@ spec:
     spec:
       containers:
       - name: opswerks-hub-backend
-        image: bcantosopswerks/backend:latest
+        image: romeofrancobarro/opswerks-hub-backend:dev  # Changed to dev image
         ports:
         - containerPort: 5000
         env:
         - name: NODE_ENV
-          value: "development" #production or development
-
+          value: "development"  # Set to development
+        resources:
+          requests:
+            memory: "8Mi"  # Reduced memory request for dev
+            cpu: "5m"      # Reduced CPU request for dev
+          limits:
+            memory: "16Mi"  # Reduced memory limit for dev
+            cpu: "10m"      # Reduced CPU limit for dev
+ 
 ---
-
+ 
+# Backend Service for Development
 apiVersion: v1
 kind: Service
 metadata:
   name: opswerks-hub-backend-service
-  namespace: dev  
-  labels: 
+  namespace: dev
+  labels:
     backend: opswerks-hub-backend-service
 spec:
   type: LoadBalancer
@@ -120,19 +126,20 @@ spec:
   ports:
   - port: 5000
     targetPort: 5000
-
+ 
 ---
-
+ 
+# Cassandra StatefulSet for Development
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: opswerks-hub-database
-  namespace: dev 
+  namespace: dev  
   labels:
     app: opswerks-hub-database
 spec:
-  serviceName: opswerks-hub-database-service 
-  replicas: 3
+  serviceName: opswerks-hub-database-service
+  replicas: 2
   selector:
     matchLabels:
       app: opswerks-hub-database
@@ -148,7 +155,7 @@ spec:
         - containerPort: 9042
         env:
         - name: CASSANDRA_SEEDS
-          value: "opswerks-hub-database-0.opswerks-hub-database-service"
+          value: "opswerks-hub-database-0.opswerks-hub-database-service.dev.svc.cluster.local"
         - name: CASSANDRA_CLUSTER_NAME
           value: "OpsWerksHubDatabaseCluster"
         volumeMounts:
@@ -162,10 +169,14 @@ spec:
         - ReadWriteOnce
       resources:
         requests:
-          storage: 1Gi
-
+          memory: "64Mi"  # Reduced memory request for dev
+          cpu: "50m"      # Reduced CPU request for dev
+        limits:
+          memory: "128Mi"  # Reduced memory limit for dev
+          cpu: "100m"
+ 
 ---
-
+ 
 apiVersion: v1
 kind: Service
 metadata:
@@ -174,8 +185,7 @@ metadata:
 spec:
   clusterIP: None  
   selector:
-    app: opswerks-hub-database 
+    app: opswerks-hub-database
   ports:
   - port: 9042
     targetPort: 9042
-
