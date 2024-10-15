@@ -53,7 +53,8 @@ pipeline {
             steps {
                 container('node') {
                     script {
-                        sh 'npm --prefix ./web/src/frontend run test -- --ci --coverage'
+                        sh 'cd src/opswerks-hub'
+                        sh 'npm test'
                     }
                 }
             }
