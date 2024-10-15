@@ -1,5 +1,10 @@
 pipeline {
-    agent any
+    agent {
+        kubernetes {
+            inheritFrom 'k8s-agent'
+            defaultContainer 'docker'
+        }
+    }
     environment {
         DOCKERHUB_USER = 'bcantosopswerks'
         IMAGE_TAG = 'latest'  // Change to a specific version if needed, like 'v1.0'
