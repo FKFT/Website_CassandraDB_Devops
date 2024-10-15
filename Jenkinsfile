@@ -49,22 +49,11 @@ pipeline {
                 }
             }
         }
-        stage('Check Pwd') {
-            steps {
-                container('node') {
-                    script {
-                        sh 'cd src/opswerks-hub'
-                        sh 'pwd'
-                    }
-                }
-            }
-        }
         stage('Run Unit Tests') {
             steps {
                 container('node') {
                     script {
-                        sh 'cd src/opswerks-hub'
-                        sh 'npm test'
+                        sh 'npm --prefix ./web/src/frontend run test -- --ci --coverage'
                     }
                 }
             }
