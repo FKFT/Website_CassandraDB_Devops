@@ -2,7 +2,7 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom'
-import PostCreate from './CreatePost';
+import PostCreate from '../components/CreatePost';
 import axios from 'axios';
 
 jest.mock('axios'); // Mock axios to prevent actual API calls
