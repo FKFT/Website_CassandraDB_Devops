@@ -53,11 +53,10 @@ pipeline {
             steps {
                 container('docker-npm'){
                     script{
-                        sh 'docker run -d --name test6 romeofrancobarro/frontend:dev'
-                        sh 'docker exec -i test6 /bin/sh -c "cd app/ && npm run test"'
+                        sh 'docker run -d --name test8 romeofrancobarro/frontend:dev'
+                        sh 'docker exec -i test8 /bin/sh -c "cd app/ && npm run test"'
                     }
                 }
-                
             }
         }
         stage('Deploy to Kubernetes') {
