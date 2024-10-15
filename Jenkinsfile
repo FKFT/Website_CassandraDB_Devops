@@ -6,8 +6,8 @@ pipeline {
         }
     }
     environment {
-        DOCKERHUB_USER = 'bcantosopswerks'
-        IMAGE_TAG = 'latest'  // Change to a specific version if needed, like 'v1.0'
+        DOCKERHUB_USER = 'romeofrancobarro'
+        IMAGE_TAG = 'dev'  // Change to a specific version if needed, like 'v1.0'
     }
     stages {
         stage('Prepare Kubeconfig') {
@@ -24,7 +24,7 @@ pipeline {
         stage('Docker Login') {
             steps {
                 script {
-                    withCredentials([usernamePassword(credentialsId: 'dockerhubCreds', passwordVariable: 'DOCKER_PASS', usernameVariable: 'DOCKER_USER')]) {
+                    withCredentials([usernamePassword(credentialsId: 'RomeoDocker', passwordVariable: 'DOCKER_PASS', usernameVariable: 'DOCKER_USER')]) {
                         sh "echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin"
                     }
                 }
