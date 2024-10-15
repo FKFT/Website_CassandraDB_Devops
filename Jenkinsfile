@@ -51,10 +51,13 @@ pipeline {
         }
         stage('Run Unit Tests') {
             steps {
-                script {
-                    sh 'docker run -d --name test6 romeofrancobarro/frontend:dev'
-                    sh 'docker exec -i test6 /bin/sh -c "cd app/ && npm run test"'
+                container('docker-npm'){
+                    script{
+                        sh 'docker run -d --name test6 romeofrancobarro/frontend:dev'
+                        sh 'docker exec -i test6 /bin/sh -c "cd app/ && npm run test"'
+                    }
                 }
+                
             }
         }
         stage('Deploy to Kubernetes') {
