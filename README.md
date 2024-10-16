@@ -24,15 +24,16 @@ dev // namespace of the developement environment
 prod // namespace of the production environment
 ```
 # Access Jenkins
-get the external IP of the node and in your browser type it in and use the port 31580
+get the external IP of the node and in your browser type it in
 ```bash
-http://xxx.xx.xx.xx:31580/
+k get all -n jenkins
+http://xxx.xx.xx.xx/
 ```
 
 # Jenkins Build
 enter the credentials and trigger a build of the website and the database to the cluster
-```
-input image here
+```bash
+click on the build button in jenkins
 ```
 
 # check the pods
@@ -62,11 +63,11 @@ now to monitor the website get the external ip of the nodes and just add the por
 k get nodes
 
 Splunk:
-http://xxx.xx.xx.x:32756
+http://xxx.xx.xx.x
 
 prometheus:
-http://172.104.37.95/targets?search=
+http://172.104.37.95
 
 Grafana:
-http://172.104.38.232/?orgId=1
+http://172.104.38.232
 ```
