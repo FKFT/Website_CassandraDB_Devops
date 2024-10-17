@@ -2,7 +2,7 @@ pipeline {
     agent {
         kubernetes {
             inheritFrom 'k8s-agent'
-            defaultContainer 'docker'
+            defaultContainer 'docker' 
         }
     }
     environment {
@@ -45,6 +45,16 @@ pipeline {
                         def imageName = "${DOCKERHUB_USER}/${service}:${IMAGE_TAG}"
                         sh "docker tag demo-run-${service}:latest ${imageName}"
                         sh "docker push ${imageName}"
+                    }
+                }
+            }
+        }
+        stage('Run Unit Tests') {
+            steps {
+                container('linux-container'){
+                    script{
+                        sh 'docker run -d --name test12 romeofrancobarro/frontend:dev'
+                        sh 'docker exec -i test12 /bin/sh -c "cd app/ && npm run test"'
                     }
                 }
             }
